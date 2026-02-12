@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+.bg-emerald-600 {
+    background-color: blue;
+}
+.bg-emerald-100 {
+    background-color: rgb(192, 192, 252);
+}
+
+.hover\:bg-emerald-700:hover {
+    background-color: #1d4ed8;
+    /* Blue-700 */
+}
+
+.text-emerald-600 {
+    color: blue;
+}
+.border-emerald-600{
+    border-color: blue;
+}
