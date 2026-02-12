@@ -182,68 +182,87 @@ router.get("/applicants/:jobId", async (req, res) => {
 });
 
 
-// Get all applications for a particular candidate
-router.get("/applications/:candidateId", async (req, res) => {
-    try {
-        const { candidateId } = req.params; 
+/**
+ * GET APPLICATIONS OF A CANDIDATE
+ * --------------------------------
+ * Route:
+ *   GET /api/applications/:userId
+ *
+ * Flow:
+ *   signup(userId) → candidate → applicant → job details
+ *
+ * Returns:
+ *   - list of applications
+ *   - job info
+ *   - candidate basic info
+ */
 
-        // 1️⃣ Validate candidateId
-        if (!candidateId) {
-            return res.status(400).json({
-                success: false,
-                message: "Candidate ID is required",
-            });
-        }
-        const candidate = await Candidate.find({ userId: candidateId });
-        if (!candidate.length) {
-            return res.status(404).json({
-                success: false,
-                message: "Candidate not found",
-            });
-        }
+router.get("/applications/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
 
-
-        // console.log(candidate[0]._id)
-        // 2️⃣ Fetch applications (FIXED QUERY + POPULATE)
-        const applications = await Applicant.find({ candidateId: candidate[0]._id })
-            .populate({
-                path: "jobId",
-                select: "title location",
-            })
-            .populate({
-                path: "candidateId",
-                select: "location resume",
-                populate: {
-                    path: "userId",
-                    select: "name email",
-                },
-            })
-            .lean();
-
-        // 3️⃣ Empty state
-        if (!applications.length) {
-            return res.status(200).json({
-                success: true,
-                count: 0,
-                message: "No applications found",
-                data: [],
-            });
-        }
-
-        // 4️⃣ Success response
-        res.status(200).json({
-            success: true,
-            count: applications.length,
-            data: applications,
-        });
-    } catch (error) {
-        console.error("Get applications error:", error);
-        res.status(500).json({
-            success: false,
-            message: "Server error",
-        });
+    // 1️⃣ Validate userId
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
     }
+
+    // 2️⃣ Find candidate profile from signup id
+    const candidate = await Candidate.findOne({ userId });
+
+    if (!candidate) {
+      return res.status(404).json({
+        success: false,
+        message: "Candidate not found",
+      });
+    }
+
+    // 3️⃣ Find applications
+    const applications = await Applicant.find({
+      candidateId: candidate._id,
+    })
+      .populate({
+        path: "jobId",
+        select: "title location",
+      })
+      .populate({
+        path: "candidateId",
+        select: "location resume",
+        populate: {
+          path: "userId",
+          select: "name email",
+        },
+      })
+      .lean();
+
+    // 4️⃣ Empty state
+    if (!applications.length) {
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        message: "No applications found",
+        data: [],
+      });
+    }
+
+    // 5️⃣ Success
+    return res.status(200).json({
+      success: true,
+      count: applications.length,
+      data: applications,
+    });
+  } catch (error) {
+    console.error("Get applications error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 });
+
 
 
 // gettting all candidates for particular status
