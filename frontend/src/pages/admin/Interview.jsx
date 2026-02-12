@@ -1,43 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 const Interview = () => {
-  const interviewCandidates = [
-    {
-      id: 1,
-      name: "Ramesh Kumar",
-      role: "Frontend Developer Intern",
-      email: "ramesh@gmail.com",
-      phone: "9876543210",
-      interviewDate: "2026-02-22",
-      interviewTime: "11:00 AM",
-      interviewMode: "Online",
-      interviewer: "HR Team",
-    },
-    {
-      id: 2,
-      name: "Sita Devi",
-      role: "Backend Developer",
-      email: "sita@gmail.com",
-      phone: "9123456789",
-      interviewDate: "2026-02-23",
-      interviewTime: "02:00 PM",
-      interviewMode: "Offline",
-      interviewer: "Tech Lead",
-    },
-    {
-      id: 3,
-      name: "Amit Singh",
-      role: "Data Analyst Intern",
-      email: "amit@gmail.com",
-      phone: "9988776655",
-      interviewDate: "2026-02-24",
-      interviewTime: "10:30 AM",
-      interviewMode: "Online",
-      interviewer: "Analytics Manager",
-    },
-  ];
+  const [interviewCandidates, setInterviewCandidates] = useState([])
 
-useEffect(()=>{
+  useEffect(() => {
     document.title = "Interviews"
   })
 
@@ -60,12 +26,12 @@ useEffect(()=>{
 
     return matchesSearch && matchesRole && matchesMode && matchesDate;
   });
-  
+
 
   return (
     <Fragment>
       <div className="min-h-screen bg-slate-100 p-4 md:p-6">
-        
+
         {/* Header */}
         <header className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 md:p-6 rounded-xl shadow mb-6">
           <h1 className="text-xl md:text-2xl font-semibold text-white">
@@ -78,7 +44,7 @@ useEffect(()=>{
 
         {/* Filters */}
         <div className="bg-white rounded-xl shadow p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          
+
           <input
             type="text"
             placeholder="Search name / email / phone"
@@ -131,7 +97,7 @@ useEffect(()=>{
         {/* Table */}
         <div className="bg-white rounded-xl shadow overflow-x-auto">
           <table className="min-w-full text-sm text-left">
-            
+
             <thead className="bg-slate-200 text-slate-700 uppercase">
               <tr>
                 <th className="px-4 py-3">Candidate Name</th>
@@ -172,11 +138,10 @@ useEffect(()=>{
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          candidate.interviewMode === "Online"
+                        className={`px-3 py-1 text-xs font-semibold rounded-full ${candidate.interviewMode === "Online"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-orange-100 text-orange-700"
-                        }`}
+                          }`}
                       >
                         {candidate.interviewMode}
                       </span>
@@ -192,7 +157,7 @@ useEffect(()=>{
                     colSpan="8"
                     className="text-center py-6 text-gray-500"
                   >
-                    No candidates found
+                    No Interviews found
                   </td>
                 </tr>
               )}

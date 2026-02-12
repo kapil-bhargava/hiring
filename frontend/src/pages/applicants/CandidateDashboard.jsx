@@ -6,6 +6,7 @@ import {
   FaCalendarAlt,
 } from "react-icons/fa";
 
+
 const CandidateDashboard = () => {
   const stats = [
     {

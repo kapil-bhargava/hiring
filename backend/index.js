@@ -15,7 +15,7 @@ connectDB();
 //   cors()
 // );
 app.use(cors({
-  origin: "http://192.168.29.75:5173",
+  origin: process.env.API,
   credentials: true
 }));
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import AdminSidebar from '../components/admin/adminsidebar'
 import { Outlet } from 'react-router-dom'
+import AdminBadge from '../components/admin/AdminBadge';
 
 
 function AdminLayout() {
@@ -17,9 +18,9 @@ function AdminLayout() {
                         ☰
                     </button>
 
-                    <h1 className="text-xl font-semibold">Admin Dashboard</h1>
+                    <h1 className="text-xl font-semibold">Admin Panel</h1>
 
-                    <span className="text-gray-600">Welcome, Admin</span>
+                    <AdminBadge/>
                 </header>
 
 

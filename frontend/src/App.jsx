@@ -30,6 +30,7 @@ import CandidateSettings from './pages/applicants/CandidateSettings'
 import CandidateInterviews from './pages/applicants/CndidateInterview'
 import Toast from './components/toast'
 import Rejectedlisted from './pages/admin/Rejected'
+import AdminProfile from './pages/admin/AdminProfile'
 function App() {
 
   return (
@@ -74,6 +75,7 @@ function App() {
           <Route path="rejected" element={<Rejectedlisted />} />
           <Route path="interview" element={<Interview />} />
           <Route path="usersign" element={<SignUpTable />} />
+          <Route path="profile" element={<AdminProfile />} />
           <Route path="*" element={<h1>No ppage</h1>} />
         </Route>
 

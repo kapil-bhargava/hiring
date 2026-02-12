@@ -15,91 +15,7 @@ const { applicationStatusTemplate } = require("../utils/emailTemplates");
 /**
  * POST: Apply for a job
  */
-// router.post("/apply", async (req, res) => {
-//     try {
-//         const { jobId, candidateId } = req.body;
 
-//         if (!jobId || !candidateId) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "jobId and candidateId are required",
-//             });
-//         }
-
-//         const candidate = await Candidate
-//             .findOne({ userId: candidateId })
-//             .populate("userId", "name email");
-
-//         if (!candidate) {
-//             return res.json({
-//                 success: false,
-//                 message: "Please create your profile",
-//             });
-//         }
-
-//         if (!candidate.resume?.fileUrl) {
-//             return res.json({
-//                 success: false,
-//                 message: "Please upload your resume before applying",
-//             });
-//         }
-
-//         const alreadyApplied = await Applicant.findOne({
-//             jobId,
-//             candidateId: candidate._id,
-//         });
-
-//         if (alreadyApplied) {
-//             return res.status(409).json({
-//                 success: false,
-//                 message: "Already applied",
-//             });
-//         }
-
-//         const job = await Job.findById(jobId).select("title location");
-
-//         const application = await Applicant.create({
-//             jobId,
-//             candidateId: candidate._id,
-//             status: "pending",
-//             appliedAt: new Date(),
-//         });
-
-//         /* 📧 Confirmation Email */
-//         try {
-//             const user = candidate.userId;
-
-//             if (user?.email) {
-//                 await sendMail({
-//                     to: user.email,
-//                     subject: `Application Received – ${job.title}`,
-//                     html: applicationStatusTemplate({
-//                         name: user.name,
-//                         jobTitle: job.title,
-//                         status: "pending",
-//                     }),
-//                 });
-//             }
-//         } catch (emailError) {
-//             console.error("Application email failed:", emailError.message);
-//         }
-
-//         res.status(200).json({
-//             success: true,
-//             message: "Job applied successfully",
-//             data: application,
-//         });
-
-//     } catch (error) {
-//         console.error("Apply job error:", error);
-//         res.status(500).json({
-//             success: false,
-//             message: error.message,
-//         });
-//     }
-// });
-
-// latest 
 router.post("/apply", async (req, res) => {
     try {
         const { jobId, candidateId } = req.body;
@@ -269,7 +185,7 @@ router.get("/applicants/:jobId", async (req, res) => {
 // Get all applications for a particular candidate
 router.get("/applications/:candidateId", async (req, res) => {
     try {
-        const { candidateId } = req.params;
+        const { candidateId } = req.params; 
 
         // 1️⃣ Validate candidateId
         if (!candidateId) {

@@ -1,59 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import {
-  FaBars,
   FaTimes,
   FaTachometerAlt,
   FaSearch,
   FaBriefcase,
-  FaBookmark,
-  FaCalendarAlt,
   FaUser,
-  FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import logo from "../../assets/logo.jpeg";
 
 const CandidateSidebar = ({ isOpen, setIsOpen }) => {
-  const [cookie, , removecookie] = useCookies()
-  const navigate = useNavigate()
+  const [cookie, , removecookie] = useCookies();
+  const navigate = useNavigate();
+  const location = useLocation(); // ✅ added
 
   const menuItems = [
     { name: "Dashboard", icon: <FaTachometerAlt />, path: "/candidate/dashboard" },
     { name: "Browse Jobs", icon: <FaSearch />, path: "/candidate/browse-jobs" },
     { name: "Applied Jobs", icon: <FaBriefcase />, path: "/candidate/applied-jobs" },
-    { name: "Saved Jobs", icon: <FaBookmark />, path: "/candidate/saved-jobs" },
-    { name: "Interviews", icon: <FaCalendarAlt />, path: "/candidate/interviews" },
     { name: "Profile", icon: <FaUser />, path: "/candidate/profile" },
-    { name: "Settings", icon: <FaCog />, path: "/candidate/settings" },
   ];
 
   useEffect(() => {
     if (!cookie.user) {
-      navigate("/signin")
+      navigate("/signin");
     }
-    // else{
-      
-    // }
-  }, [])
-
+  }, []);
 
   useEffect(() => {
-    document.title = "Candidate Sidebar"
-  })
+    document.title = "Candidate Sidebar";
+  });
 
   return (
     <>
-
-
-      {/* Mobile Top Bar */}
-      {/* <div className="md:hidden flex items-center justify-between bg-purple-600 text-white p-4">
-        <h2 className="text-lg font-semibold">Candidate Panel</h2>
-        <button onClick={() => setOpen(true)}>
-          <FaBars size={22} />
-        </button>
-      </div> */}
-
       {/* Overlay (Mobile) */}
       {isOpen && (
         <div
@@ -69,58 +50,65 @@ const CandidateSidebar = ({ isOpen, setIsOpen }) => {
         md:translate-x-0`}
       >
         {/* Sidebar Header */}
-        <div className=" bg-purple-600 text-white p-3 text-center">
-          <h2 className="text-lgfont-semibold">Candidate Panel</h2>
-          <span className="text-sm text-gray-300">{cookie.user ? cookie.user.name : "null"}</span>
-          <button className="md:hidden" onClick={() => setIsOpen(false)}>
+        <div className="bg-white border-b p-3 text-center">
+          <Link to="/">
+            <img src={logo} className="w-30 m-auto" alt="logo" />
+          </Link>
+          <span className="block text-sm text-black mt-1">
+            {cookie.user ? cookie.user.name : ""}
+          </span>
+
+          <button className="md:hidden absolute top-4 right-4" onClick={() => setIsOpen(false)}>
             <FaTimes size={20} />
           </button>
         </div>
 
-
         {/* Menu */}
         <nav className="p-4 space-y-2">
-          {menuItems.map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              className="w-full flex items-center gap-3 px-4 py-2 rounded-lg
-                 text-gray-700 hover:bg-purple-100 hover:text-purple-600
-                 transition font-medium"
-              onClick={() => {
-                setIsOpen(false); if (item.name === "Logout") {
-                  removecookie("user");
-                  navigate("/signin")
-                }
-              }}
-            >
-              <span className="text-lg text-purple-600">
-                {item.icon}
-              </span>
-              <span className="text-sm">
-                {item.name}
-              </span>
-            </Link>
-          ))}
-          {/* Logout button  */}
-          <button className="w-full flex items-center gap-3 px-4 py-2 rounded-lg
-                 text-gray-700 hover:bg-purple-100 hover:text-purple-600
-                 transition font-medium cursor-pointer"
+          {menuItems.map((item, index) => {
+            const isActive = location.pathname === item.path; // ✅ active check
+
+            return (
+              <Link
+                key={index}
+                to={item.path}
+                onClick={() => setIsOpen(false)}
+                className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg
+                  transition font-medium
+                  ${
+                    isActive
+                      ? "bg-purple-100 text-purple-700"
+                      : "text-gray-700 hover:bg-purple-100 hover:text-purple-600"
+                  }`}
+              >
+                <span
+                  className={`text-lg ${
+                    isActive ? "text-purple-700" : "text-purple-600"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                <span className="text-sm">{item.name}</span>
+              </Link>
+            );
+          })}
+
+          {/* Logout */}
+          <button
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg
+              text-gray-700 hover:bg-purple-100 hover:text-purple-600
+              transition font-medium cursor-pointer"
             onClick={() => {
               removecookie("user");
-              navigate("/signin")
+              navigate("/signin");
             }}
           >
             <span className="text-lg text-purple-600">
               <FaSignOutAlt />
             </span>
-            <span className="text-sm">
-              Logout
-            </span>
+            <span className="text-sm">Logout</span>
           </button>
         </nav>
-
-
       </aside>
     </>
   );
