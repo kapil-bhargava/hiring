@@ -4,60 +4,76 @@ import { showToast } from "../../components/toast";
 import formatDateTime from "../../utils/dateFormatter";
 import avtar from "../../assets/int.png";
 import ApplicantProfile from "../../components/admin/ApplicantProfile";
+import Loader from "../../components/Loader";
 
 const ApplicantsList = () => {
+  const [loader, setLoader] = useState(false)
+
   const API = import.meta.env.VITE_APP_API;
 
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [selectedApplicant, setSelectedApplicant] = useState(null);
+  // const [selectedApplicant, setSelectedApplicant] = useState(null);
+  const [jobId, setJobId] = useState()
+  const [jobs, setJobs] = useState([])
 
   const [applicants, setApplicants] = useState([])
 
   const getAllApplicants = async () => {
     const res = await axios.get(`${API}/api/applicants/job/pending`);
-    console.log(res.data.data);
     setApplicants(res.data.data)
   };
 
 
+  // GETTING ALL JOBS 
+
+  const getJobs = async () => {
+    try {
+      const res = await axios.get(`${API}/api/job`);
+      console.log(res.data.data);
+      setJobs(res.data.data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getSelectedJobApplicants = async (jobId) => {
+    try {
+      const res = await axios.get(`${API}/api/applicants/${jobId}`);
+      console.log(res.data.data);
+      setApplicants(res.data.data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getAllApplicants()
+    // getJobs()
   }, [])
 
   useEffect(() => {
+    getJobs()
+  }, [])
+
+  useEffect(() => {
+    console.log("hh", jobs)
     document.title = "Applicants List"
   }, [])
 
 
   const updateApplicantStatus = async (id, status) => {
+    setLoader(true)
     const res = await axios.put(
       `${API}/api/applicants/${id}/status`,
       { status }
     );
 
-    console.log(res.data)
     showToast(res.data.message);
+    setLoader(false)
     getAllApplicants()
 
   };
-
-  /* Filters */
   const [search, setSearch] = useState("");
-  const [domain, setDomain] = useState("");
-  const [scheme, setScheme] = useState("");
 
-  /* Filter Logic */
-  // const filteredApplicants = applicants.filter((a) => {
-  //   const matchesSearch =
-  //     a.name.toLowerCase().includes(search.toLowerCase()) ||
-  //     a.village.toLowerCase().includes(search.toLowerCase()) ||
-  //     a.scheme.toLowerCase().includes(search.toLowerCase());
-
-  //   const matchesDomain = domain ? a.village === domain : true;
-  //   const matchesScheme = scheme ? a.scheme === scheme : true;
-
-  //   return matchesSearch && matchesDomain && matchesScheme;
-  // });
 
   return (
     <Fragment>
@@ -75,26 +91,36 @@ const ApplicantsList = () => {
 
         {/* Filters */}
         <div className="bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <input
-            type="text"
-            placeholder="Search name / domain / scheme"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="">Search </label>
+            <input
+              type="text"
+              placeholder="Search name / domain / scheme"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border rounded-lg px-3 py-2"
+            />
+          </div>
+          <div className="flex flex-col">
 
-          <select
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-            className="border rounded-lg px-3 py-2"
-          >
-            <option value="">All Domains</option>
-            <option>Data-Science</option>
-            <option>WebDevelopment</option>
-            <option>Frontend</option>
-          </select>
+            <label htmlFor="">Select Jobs</label>
+            <select
+              // value={jobId}
+              onChange={(e) => getSelectedJobApplicants(e.target.value)}
+              className="border rounded-lg px-3 py-2"
+            >
+              <option value="">Select Job</option>
+              {
+                jobs.length > 0 ? jobs.map((job, index) => {
+                  return (
+                    <option key={job._id} value={job._id}>{job.title}</option>
+                  )
+                }) : <option>No jobs</option>
+              }
+            </select>
+          </div>
 
-          <select
+          {/* <select
             value={scheme}
             onChange={(e) => setScheme(e.target.value)}
             className="border rounded-lg px-3 py-2"
@@ -103,9 +129,9 @@ const ApplicantsList = () => {
             <option>PMAY</option>
             <option>Ujjwala</option>
             <option>MNREGA</option>
-          </select>
+          </select> */}
 
-          <button
+          {/* <button
             onClick={() => {
               setSearch("");
               setDomain("");
@@ -114,7 +140,7 @@ const ApplicantsList = () => {
             className="bg-gray-200 hover:bg-gray-300 rounded-lg font-semibold"
           >
             Clear
-          </button>
+          </button> */}
         </div>
 
         {/* Table */}
@@ -162,7 +188,7 @@ const ApplicantsList = () => {
 
                     {/* Job */}
                     <td className="px-5 py-4 text-gray-700">
-                      {applicant.jobId.title}
+                      {applicant.jobId.title || applicant.title}
                     </td>
 
                     {/* Status */}
@@ -233,7 +259,7 @@ const ApplicantsList = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-gray-500">
+                  <td colSpan="7" className="py-8 text-center text-gray-500">
                     No applicants found
                   </td>
                 </tr>
@@ -243,7 +269,7 @@ const ApplicantsList = () => {
         </div>
 
       </div>
-      
+
       {/* Applicant profile modal */}
       {selectedCandidate && (
         <ApplicantProfile
@@ -251,6 +277,12 @@ const ApplicantsList = () => {
           onClose={() => setSelectedCandidate(null)}
         />
       )}
+
+      {/* Loader  */}
+      {
+        loader &&
+        <Loader message="Updating Status..." />
+      }
     </Fragment>
   );
 };

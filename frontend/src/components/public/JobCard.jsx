@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { showToast } from "../../components/toast";
 import axios from "axios";
+import Loader from "../Loader";
 
 const JobCard = () => {
 
@@ -188,14 +189,10 @@ const JobCard = () => {
             </div>
 
             {/* Loader */}
-            {loader && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <p className="text-gray-800 font-medium">Applying...</p>
-                    </div>
-                </div>
-            )}
-            {/* </section > */}
+            {
+                loader &&
+                <Loader message="Applying..." />
+            }
         </>
     )
 }

@@ -33,7 +33,7 @@ router.post("/job", async (req, res) => {
     }
 });
 
-// creating job 
+// getting all jobs
 router.get("/job", async (req, res) => {
   try {
     const jobs = await Job.find().sort({ createdAt: -1 });

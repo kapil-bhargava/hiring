@@ -1,7 +1,13 @@
-let arr = ["j"];
-if(arr.length>0){
-    console.log("if wala")
+let applicants = [{
+    name: "Rohan"
+},
+{
+    name: "Tina"
 }
-else{
-    console.log("elase wlaa")
+]
+
+for (let i = 0; i < applicants.length; i++) {
+    applicants[i].title = "jobData.title"
 }
+
+console.log(applicants)

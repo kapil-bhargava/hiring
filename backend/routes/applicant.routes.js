@@ -9,6 +9,7 @@ const Signup = require("../models/signup");
 const formatDate = require("../utils/dateformatter");
 const sendMail = require("../utils/mailer");
 const { applicationStatusTemplate } = require("../utils/emailTemplates");
+const applicant = require("../models/applicant");
 
 
 // creating job 
@@ -165,12 +166,19 @@ router.post("/apply", async (req, res) => {
 router.get("/applicants/:jobId", async (req, res) => {
     try {
         const { jobId } = req.params;
-        // console.log(jobId)
 
-        const applicants = await Applicant.find({ jobId })
-            .populate("userId") // candidates details
-            .populate("jobId", "title location");
+        let applicants = await Applicant.find({ jobId }).lean()
+        const jobData = await Job.findOne({ _id: jobId })
+        console.log(jobData.title)
 
+        for (let i = 0; i < applicants.length; i++) {
+            applicants[i].title = jobData.title
+
+        }
+
+        console.log(applicants)
+
+        console.log(applicants)
         res.status(200).json({
             count: applicants.length,
             data: applicants,
@@ -198,69 +206,69 @@ router.get("/applicants/:jobId", async (req, res) => {
  */
 
 router.get("/applications/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
+    try {
+        const { userId } = req.params;
 
-    // 1️⃣ Validate userId
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
+        // 1️⃣ Validate userId
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "User ID is required",
+            });
+        }
+
+        // 2️⃣ Find candidate profile from signup id
+        const candidate = await Candidate.findOne({ userId });
+
+        if (!candidate) {
+            return res.status(404).json({
+                success: false,
+                message: "Candidate not found",
+            });
+        }
+
+        // 3️⃣ Find applications
+        const applications = await Applicant.find({
+            candidateId: candidate._id,
+        })
+            .populate({
+                path: "jobId",
+                select: "title location",
+            })
+            .populate({
+                path: "candidateId",
+                select: "location resume",
+                populate: {
+                    path: "userId",
+                    select: "name email",
+                },
+            })
+            .lean();
+
+        // 4️⃣ Empty state
+        if (!applications.length) {
+            return res.status(200).json({
+                success: true,
+                count: 0,
+                message: "No applications found",
+                data: [],
+            });
+        }
+
+        // 5️⃣ Success
+        return res.status(200).json({
+            success: true,
+            count: applications.length,
+            data: applications,
+        });
+    } catch (error) {
+        console.error("Get applications error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
     }
-
-    // 2️⃣ Find candidate profile from signup id
-    const candidate = await Candidate.findOne({ userId });
-
-    if (!candidate) {
-      return res.status(404).json({
-        success: false,
-        message: "Candidate not found",
-      });
-    }
-
-    // 3️⃣ Find applications
-    const applications = await Applicant.find({
-      candidateId: candidate._id,
-    })
-      .populate({
-        path: "jobId",
-        select: "title location",
-      })
-      .populate({
-        path: "candidateId",
-        select: "location resume",
-        populate: {
-          path: "userId",
-          select: "name email",
-        },
-      })
-      .lean();
-
-    // 4️⃣ Empty state
-    if (!applications.length) {
-      return res.status(200).json({
-        success: true,
-        count: 0,
-        message: "No applications found",
-        data: [],
-      });
-    }
-
-    // 5️⃣ Success
-    return res.status(200).json({
-      success: true,
-      count: applications.length,
-      data: applications,
-    });
-  } catch (error) {
-    console.error("Get applications error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
 });
 
 
