@@ -4,6 +4,8 @@ import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import avtar from "../../assets/int.png";
 
+import { confirmLogout } from "../../utils/confirmDialogue"
+
 export default function CandidateBadge() {
     const [cookie, , removeCookie] = useCookies()
     const [open, setOpen] = useState(false);
@@ -22,12 +24,16 @@ export default function CandidateBadge() {
     }, []);
 
 
+    // logout confirmatino 
+    const handleLogout = async () => {
+        const ok = await confirmLogout();
+        if (ok) {
+            removeCookie("user")
+            navigate("/")
+        }
+    };
 
-    const logout = () => {
-        removeCookie("user")
-        navigate("/")
 
-    }
 
 
     const API = import.meta.env.VITE_APP_API;
@@ -111,7 +117,7 @@ export default function CandidateBadge() {
                         <button
                             onClick={() => {
                                 setOpen(false);
-                                logout();
+                                handleLogout()
                             }}
                             className="w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
                         >

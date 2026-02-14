@@ -16,7 +16,7 @@ const Shortlisted = () => {
 
   const getAllApplicants = async () => {
     const res = await axios.get(`${API}/api/applicants/job/shortlisted`);
-    console.log("tt",res.data.data[0]);
+    console.log("tt", res.data.data[0]);
     setApplicants(res.data.data)
   };
 
@@ -44,16 +44,11 @@ const Shortlisted = () => {
   // });
 
   // shceduling interview for shortlisted candidates 
-  const updateApplicantStatus = async (id, status) => {
-    const res = await axios.put(
-      `${API}/api/applicants/${id}/status`,
-      { status }
-    );
-    console.log(res.data)
-
-
-    showToast("Status updated successfully", "success");
-    getAllApplicants(); // Refresh the list after updating status
+  const scheduleInterview = async (applicantId) => {
+    showToast("Not in Task")
+  };
+  const viewApplicant = async (applicantId) => {
+    showToast("Not in Task")
   };
 
 
@@ -162,8 +157,8 @@ const Shortlisted = () => {
 
                     {/* Shortlisted on */}
                     <td className="px-5 py-4 text-gray-700">
-                      { applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[0] : "N/A"} <br />
-                      { applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[1].trim() : "N/A"}
+                      {applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[0] : "N/A"} <br />
+                      {applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[1].trim() : "N/A"}
                     </td>
 
                     {/* Status */}
@@ -206,12 +201,15 @@ const Shortlisted = () => {
                         </button> */}
 
                         <button
-                          onClick={() => updateApplicantStatus(applicant._id, "interview")}
+                          onClick={() => scheduleInterview(applicant._id, "interview")}
                           className="px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition">
                           Interview
                         </button>
 
-                        <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+                        <button
+                          onClick={() => viewApplicant(applicant._id)}
+                          className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+
                           View
                         </button>
                       </div>

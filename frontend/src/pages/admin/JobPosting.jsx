@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import JobPostingForm from "./JobForm";
-  import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+
+import { confirmDelete } from "../../utils/confirmDialogue";
+import { showToast } from "../../components/toast";
 
 const JobPosting = () => {
 
   // toast msg function 
-  const toastmsg = ()=>{
+  const toastmsg = () => {
     toast("saved")
   }
 
@@ -47,18 +50,32 @@ const JobPosting = () => {
     fetchJobs();
   }, [jobform]);
 
+  // deleting job 
+
   const deleteJobs = async (id) => {
     try {
       // alert("hii")
       const res = await axios.delete(`${API}/api/job/${id}`);
-      alert(res.data.message);
+      // alert(res.data.message);
       setJobs(await getJobs())
+      showToast(res.data.message)
     } catch (error) {
       console.error(
         error.response?.data?.message || error.message
       );
     }
   };
+
+  const handleDelete = async (id) => {
+    const ok = await confirmDelete("Delete this Job?")
+    if (ok) {
+      await deleteJobs(id)
+    }
+  }
+
+
+
+
   const [singleJob, setSingleJob] = useState({})
 
 
@@ -77,6 +94,13 @@ const JobPosting = () => {
     }
   };
 
+
+  const selectedJobType = (jobtype) => {
+    setJobType(jobtype)
+    const currentJobs = jobs.filter((x) => x.jobType === jobtype)
+    setJobs(currentJobs)
+
+  }
 
 
 
@@ -115,33 +139,18 @@ const JobPosting = () => {
               className="border rounded-lg px-3 py-2"
             />
 
-            <select
-              value={experience}
-              onChange={(e) => setexperience(e.target.value)}
-              className="border rounded-lg px-3 py-2"
-            >
-              <option value="">All Experience</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Human Resources">Human Resources</option>
-              <option value="Marketing">Marketing</option>
-            </select>
 
             <select
               value={jobType}
-              onChange={(e) => setJobType(e.target.value)}
+              onChange={(e) => selectedJobType(e.target.value)}
+              // onChange={(e) => setJobType(e.target.value)}
               className="border rounded-lg px-3 py-2"
             >
-              <option value="">All Job Types</option>
+              {/* <option value="">All Job Types</option> */}
               <option value="Full-Time">Full-Time</option>
               <option value="Part-Time">Part-Time</option>
               <option value="Internship">Internship</option>
             </select>
-            <input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="border rounded-lg px-3 py-2"
-            />
-
 
           </div>
 
@@ -175,7 +184,7 @@ const JobPosting = () => {
                           <button className="flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded bg-blue-600 text-white hover:bg-blue-700" onClick={() => getSingleJob(job._id)}>
                             <FaEdit /> Edit
                           </button>
-                          <button className="flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded bg-red-600 text-white hover:bg-red-700" onClick={() => deleteJobs(job._id)}>
+                          <button className="flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded bg-red-600 text-white hover:bg-red-700" onClick={() => handleDelete(job._id)}>
                             <FaTrash /> Delete
                           </button>
                         </div>

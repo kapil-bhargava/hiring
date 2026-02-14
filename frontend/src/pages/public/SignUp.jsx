@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import logo from '../../assets/logo.jpeg'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import { showToast } from "../../components/Toast";
 
@@ -19,6 +19,7 @@ const SignUp = () => {
         });
     };
 
+    const navigate= useNavigate()
     const API = import.meta.env.VITE_APP_API
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,6 +34,9 @@ const SignUp = () => {
             const res = await axios.post(`${API}/api/signup`, formData)
             console.log(res.data)
             showToast(res.data.message)
+            if(res.data.message === "Signup successful"){
+                navigate("/signin")
+            }
         }catch(err){
             showToast(err.message)
         }
