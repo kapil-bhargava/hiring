@@ -1,4 +1,4 @@
-const link= "https://drive.google.com/file/d/1kuotwt3OgVB5wLr-nn54OPOJotQvfTEl/view";
+const link= "https://drive.usercontent.google.com/download?id=1kuotwt3OgVB5wLr-nn54OPOJotQvfTEl&export=view&authuser=0";
 exports.applicationStatusTemplate = ({ name, jobTitle, status }) => {
   // Status-based configuration
   const statusConfig = {
