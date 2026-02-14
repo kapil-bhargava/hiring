@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { Pencil } from "lucide-react";
 import { useEffect } from "react";
+import { showToast } from "../../components/toast";
 
 const ProfilePicUploader = ({ profile, userId, fetchCandidateProfile, onProfilePicUpdate }) => {
     const fileInputRef = useRef(null);
@@ -39,7 +40,11 @@ const ProfilePicUploader = ({ profile, userId, fetchCandidateProfile, onProfileP
                 // Option 2: Update profile state manually (more efficient, but requires careful handling)
                 onProfilePicUpdate(res.data.data);
             }
-
+            showToast(res.data.message)
+            setTimeout(()=>{
+                window.location.reload()
+            },[400])
+            
             console.log("✅ Profile pic upload response:", res.data);
         } catch (error) {
             console.error("❌ Profile pic upload failed:", error.response?.data || error.message);
@@ -59,7 +64,7 @@ const ProfilePicUploader = ({ profile, userId, fetchCandidateProfile, onProfileP
                 <img
                     src={`${import.meta.env.VITE_APP_API}${profile.profilePic.fileUrl}`}
                     alt="Profile"
-                    className="w-20 h-20 rounded-full object-cover"
+                    className="w-20 h-20 rounded-full object-cover border "
                 />
             ) : (
                 <div
@@ -76,7 +81,7 @@ const ProfilePicUploader = ({ profile, userId, fetchCandidateProfile, onProfileP
                 disabled={uploading}
                 className="absolute bottom-0 right-0 
           bg-white border border-gray-300 
-          rounded-full p-1 shadow hover:bg-gray-100"
+          rounded-full p-1 shadow hover:bg-gray-100 cursor-pointer"
                 title="Change profile picture"
             >
                 <Pencil size={14} className="text-gray-700" />

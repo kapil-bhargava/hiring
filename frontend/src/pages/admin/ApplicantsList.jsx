@@ -16,12 +16,54 @@ const ApplicantsList = () => {
   const [jobId, setJobId] = useState()
   const [jobs, setJobs] = useState([])
 
-  const [applicants, setApplicants] = useState([])
 
+  // 🔍 search state (input box value)
+  const [search, setSearch] = useState("");
+
+  // 📊 applicants state
+  const [applicants, setApplicants] = useState([]);
+
+  // ⏳ loader for better UX
+  const [jobloader, setjobloader] = useState(false);
+
+
+  // 🚀 Fetch applicants from backend
   const getAllApplicants = async () => {
-    const res = await axios.get(`${API}/api/applicants/job/pending`);
-    setApplicants(res.data.data)
+    try {
+      setjobloader(true);
+
+      /**
+       * ✅ Build URL dynamically
+       * If search is empty → backend returns all applicants
+       * If search has value → backend filters data
+       */
+      let url = `${API}/api/applicants/job/pending`;
+
+      /**
+       * 🔍 Add search query only if user typed something
+       * This prevents unnecessary filtering
+       */
+      if (search.trim() !== "") {
+        url += `?search=${search}`;
+      }
+
+      /**
+       * 📡 API call
+       */
+      const res = await axios.get(url);
+
+      /**
+       * 📊 Store applicants in state
+       */
+      setApplicants(res.data.data);
+
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+    } finally {
+      setjobloader(false);
+    }
   };
+
 
 
   // GETTING ALL JOBS 
@@ -35,6 +77,8 @@ const ApplicantsList = () => {
       console.error(error);
     }
   };
+
+  
   const getSelectedJobApplicants = async (jobId) => {
     try {
       const res = await axios.get(`${API}/api/applicants/${jobId}`);
@@ -46,9 +90,13 @@ const ApplicantsList = () => {
   };
 
   useEffect(() => {
-    getAllApplicants()
-    // getJobs()
-  }, [])
+    const delay = setTimeout(() => {
+      getAllApplicants();
+    }, 500); // wait 500ms
+
+    return () => clearTimeout(delay);
+  }, [search]);
+
 
   useEffect(() => {
     getJobs()
@@ -72,7 +120,6 @@ const ApplicantsList = () => {
     getAllApplicants()
 
   };
-  const [search, setSearch] = useState("");
 
 
   return (
@@ -95,7 +142,7 @@ const ApplicantsList = () => {
             <label htmlFor="">Search </label>
             <input
               type="text"
-              placeholder="Search name / domain / scheme"
+              placeholder="Search name / email / status"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="border rounded-lg px-3 py-2"
@@ -257,7 +304,7 @@ const ApplicantsList = () => {
                     </td>
                   </tr>
                 ))
-              ) : (
+              ) : jobloader ? null :(
                 <tr>
                   <td colSpan="7" className="py-8 text-center text-gray-500">
                     No applicants found
@@ -282,6 +329,10 @@ const ApplicantsList = () => {
       {
         loader &&
         <Loader message="Updating Status..." />
+      }
+      {
+        jobloader &&
+        <Loader message="Getting applicants..." />
       }
     </Fragment>
   );

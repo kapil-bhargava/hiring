@@ -1,18 +1,27 @@
 import Swal from "sweetalert2";
 
-// 🔴 Delete Alert
+// 🔴 Delete Alert (Veridia Theme)
 export const confirmDelete = async (message = "Are you sure?") => {
   const result = await Swal.fire({
     title: message,
-    text: "You won't be able to revert this!",
+    text: "This action is permanent and cannot be undone.",
     icon: "warning",
+
     showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#6c757d",
-    confirmButtonText: "Yes, delete it!",
+
+    confirmButtonText: "Delete",
     cancelButtonText: "Cancel",
+
+    confirmButtonColor: "#ef4444", // modern red
+    cancelButtonColor: "#e5e7eb",
+
+    background: "#ffffff",
+    color: "#111827",
+
     customClass: {
-      popup: "rounded-xl",
+      popup: "rounded-2xl shadow-xl",
+      confirmButton: "px-5 py-2 font-semibold",
+      cancelButton: "px-5 py-2",
     },
   });
 
@@ -20,16 +29,29 @@ export const confirmDelete = async (message = "Are you sure?") => {
 };
 
 
-// 🔵 Logout Alert
+// 🔵 Logout Alert (Veridia Theme)
 export const confirmLogout = async () => {
   const result = await Swal.fire({
-    title: "Logout?",
-    text: "You will need to login again.",
+    title: "Sign out from Veridia?",
+    text: "You will need to log in again to access your dashboard.",
     icon: "question",
+
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#aaa",
+
     confirmButtonText: "Logout",
+    cancelButtonText: "Stay signed in",
+
+    confirmButtonColor: "#4f46e5", // Veridia primary
+    cancelButtonColor: "#e5e7eb",
+
+    background: "#ffffff",
+    color: "#111827",
+
+    customClass: {
+      popup: "rounded-2xl shadow-xl",
+      confirmButton: "px-5 py-2 font-semibold",
+      cancelButton: "px-5 py-2",
+    },
   });
 
   return result.isConfirmed;

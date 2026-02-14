@@ -73,9 +73,25 @@ export default function CandidateBadge() {
     return (
         <div className="relative" ref={panelRef}>
             {/* Profile Avatar */}
-            <img src={import.meta.env.VITE_APP_API + candidateProfile?.profilePic?.fileUrl || avtar} alt={candidateProfile?.userId?.name || "Profile"} className="w-10 h-10 rounded-full cursor-pointer border hover:ring-2 hover:ring-blue-500 transition"
+            {candidateProfile?.profilePic?.fileUrl ? (
+                <img
+                    src={`${import.meta.env.VITE_APP_API}${candidateProfile.profilePic.fileUrl}`}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover cursor-pointer border hover:ring-2 hover:ring-blue-500 transition"
+                    onClick={() => setOpen(!open)}
+                />
+            ) : (
+                <div
+                    className="w-10 h-10 rounded-full bg-purple-600 text-white 
+                    flex items-center justify-center text-xl font-bold"
+                    onClick={() => setOpen(!open)}
+                >
+                    {candidateProfile?.name?.slice(0, 2).toUpperCase()}
+                </div>
+            )}
+            {/* <img src={import.meta.env.VITE_APP_API + candidateProfile?.profilePic?.fileUrl || avtar} alt={candidateProfile?.userId?.name || "Profile"} className="w-10 h-10 rounded-full cursor-pointer border hover:ring-2 hover:ring-blue-500 transition"
                 onClick={() => setOpen(!open)}
-            />
+            /> */}
             {/* <img
                 src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200"
                 alt="Profile"
@@ -88,11 +104,22 @@ export default function CandidateBadge() {
                 <div className="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl border z-50 bg-amber-200">
                     {/* User Info */}
                     <div className="p-4 border-b text-center">
-                        <img
-                            src={import.meta.env.VITE_APP_API + candidateProfile?.profilePic?.fileUrl || avtar}
-                            className="w-16 h-16 mx-auto rounded-full mb-2"
-                            alt="user"
-                        />
+                        {candidateProfile?.profilePic?.fileUrl ? (
+                            <img
+                                src={`${import.meta.env.VITE_APP_API}${candidateProfile.profilePic.fileUrl}`}
+                                alt="Profile"
+                                className="w-16 mx-auto block h-16 mb-2 rounded-full object-cover cursor-pointer border  "
+                                onClick={() => setOpen(!open)}
+                            />
+                        ) : (
+                            <div
+                                className="w-16 h-16 mx-auto mb-2 block rounded-full bg-purple-600 text-white 
+                    flex items-center justify-center text-xl font-bold"
+                                onClick={() => setOpen(!open)}
+                            >
+                                {candidateProfile?.name?.slice(0, 2).toUpperCase()}
+                            </div>
+                        )}
                         <h4 className="font-semibold">{cookie.user.name}</h4>
                         <p className="text-sm text-gray-500">{cookie.user.email}</p>
                     </div>
@@ -123,7 +150,7 @@ export default function CandidateBadge() {
                             }}
                             className="flex gap-2 items-center w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
                         >
-                         <FaSignOutAlt />   Logout
+                            <FaSignOutAlt />   Logout
                         </button>
                     </div>
                 </div>

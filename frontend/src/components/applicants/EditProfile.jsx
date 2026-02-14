@@ -4,30 +4,16 @@ import {
   FaEnvelope,
   FaPhoneAlt,
   FaMapMarkerAlt,
-  FaGraduationCap,
-  FaBriefcase,
-  FaGithub,
-  FaLinkedin,
   FaSave,
 } from "react-icons/fa";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { showToast } from "../../components/Toast";
 
-
-
-
-
-
 const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
   const [cookies] = useCookies(["user"]);
   const userId = cookies?.user?._id;
 
-  /* =====================================================
-     FORM STATE
-     - Empty initially
-     - Filled via useEffect from profile or cookie
-  ===================================================== */
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -50,15 +36,8 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
     linkedin: "",
   });
 
-  /* =====================================================
-     PREFILL LOGIC (VERY IMPORTANT)
-     Priority:
-     1️⃣ Candidate profile (after update)
-     2️⃣ Cookie (first-time user)
-  ===================================================== */
   useEffect(() => {
     if (profile) {
-      // Existing candidate profile → highest priority
       setFormData({
         name: profile.name || "",
         email: profile.email || cookies?.user?.email || "",
@@ -81,7 +60,6 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
         linkedin: profile.linkedin || "",
       });
     } else if (cookies?.user) {
-      // First time → fallback to cookie
       setFormData((prev) => ({
         ...prev,
         name: cookies.user.name || "",
@@ -90,11 +68,6 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
     }
   }, [profile, cookies]);
 
-  /* =====================================================
-     INPUT HANDLERS
-  ===================================================== */
-
-  // Flat fields
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -102,7 +75,6 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
     });
   };
 
-  // Nested fields (education / experience)
   const handleNestedChange = (section, field, value) => {
     setFormData({
       ...formData,
@@ -113,12 +85,6 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
     });
   };
 
-  /* =====================================================
-     SUBMIT PROFILE (PATCH)
-     - Same API
-     - Same logic
-     - Converts skills string → array
-  ===================================================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -138,13 +104,8 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
       );
 
       showToast(res.data.message, "success");
-      console.log("Profile updated:", res.data);
       setEditProfile(false);
-      fetchCandidateProfile(); // Refresh profile data after update
-
-      // Optionally close edit mode
-      // setEditProfile(false);
-
+      fetchCandidateProfile();
     } catch (error) {
       console.error("Profile update failed", error);
     }
@@ -154,16 +115,18 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-4 flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-6 space-y-8"
+        className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-8 space-y-10"
       >
-        {/* ================= Header ================= */}
+        {/* Header */}
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Edit Profile</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Edit Profile
+          </h1>
 
           <div className="flex gap-3">
             <button
               type="submit"
-              className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg"
+              className="flex items-center gap-2 bg-[#9810FA] hover:bg-purple-700 text-white px-5 py-2.5 rounded-lg font-medium shadow"
             >
               <FaSave /> Save
             </button>
@@ -171,7 +134,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             <button
               type="button"
               onClick={() => setEditProfile(false)}
-              className="bg-gray-100 px-4 py-2 rounded-lg"
+              className="bg-gray-100 hover:bg-gray-200 px-5 py-2.5 rounded-lg"
             >
               Cancel
             </button>
@@ -180,19 +143,17 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
 
         <Divider />
 
-        {/* ================= Personal Info ================= */}
         <Section title="Personal Information" />
         <Grid>
           <Input
-            icon={<FaUser />}
-            label="Name"
+            label="Full Name"
             name="name"
             value={formData.name}
             onChange={handleChange}
+            placeholder="Enter your full name"
           />
 
           <Input
-            icon={<FaEnvelope />}
             label="Email"
             name="email"
             value={formData.email}
@@ -201,25 +162,24 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
           />
 
           <Input
-            icon={<FaPhoneAlt />}
             label="Phone"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
+            placeholder="Enter your phone number"
           />
 
           <Input
-            icon={<FaMapMarkerAlt />}
             label="Location"
             name="location"
             value={formData.location}
             onChange={handleChange}
+            placeholder="City, Country"
           />
         </Grid>
 
         <Divider />
 
-        {/* ================= Education ================= */}
         <Section title="Education" />
         <Grid>
           <Input
@@ -228,6 +188,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("education", "degree", e.target.value)
             }
+            placeholder="B.Tech, MBA, etc."
           />
           <Input
             label="University"
@@ -235,6 +196,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("education", "university", e.target.value)
             }
+            placeholder="University name"
           />
           <Input
             label="Start Year"
@@ -242,6 +204,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("education", "startYear", e.target.value)
             }
+            placeholder="2019"
           />
           <Input
             label="End Year"
@@ -249,12 +212,12 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("education", "endYear", e.target.value)
             }
+            placeholder="2023"
           />
         </Grid>
 
         <Divider />
 
-        {/* ================= Experience ================= */}
         <Section title="Experience" />
         <Grid>
           <Input
@@ -263,6 +226,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("experience", "role", e.target.value)
             }
+            placeholder="Frontend Developer"
           />
           <Input
             label="Company"
@@ -270,6 +234,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("experience", "company", e.target.value)
             }
+            placeholder="Company name"
           />
           <Input
             label="Start Date"
@@ -277,6 +242,7 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("experience", "startDate", e.target.value)
             }
+            placeholder="MM/YYYY"
           />
           <Input
             label="End Date"
@@ -284,31 +250,34 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
             onChange={(e) =>
               handleNestedChange("experience", "endDate", e.target.value)
             }
+            placeholder="MM/YYYY or Present"
           />
         </Grid>
 
         <Divider />
 
-        {/* ================= Skills & Links ================= */}
         <Section title="Professional" />
         <Grid>
           <Input
-            label="Skills (comma separated)"
+            label="Skills"
             name="skills"
             value={formData.skills}
             onChange={handleChange}
+            placeholder="React, Node, MongoDB"
           />
           <Input
             label="GitHub"
             name="github"
             value={formData.github}
             onChange={handleChange}
+            placeholder="GitHub profile link"
           />
           <Input
             label="LinkedIn"
             name="linkedin"
             value={formData.linkedin}
             onChange={handleChange}
+            placeholder="LinkedIn profile link"
           />
         </Grid>
       </form>
@@ -316,25 +285,32 @@ const EditProfile = ({ setEditProfile, profile, fetchCandidateProfile }) => {
   );
 };
 
-/* ================= Reusable Components ================= */
+/* Reusable */
 
 const Section = ({ title }) => (
-  <h2 className="text-lg font-semibold">{title}</h2>
+  <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
 );
 
 const Grid = ({ children }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{children}</div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">{children}</div>
 );
 
-const Input = ({ label, value, onChange, name, disabled }) => (
-  <div className="bg-slate-50 rounded-xl p-4">
-    <label className="text-xs text-gray-500">{label}</label>
+const Input = ({ label, value, onChange, name, disabled, placeholder }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-600 mb-1">
+      {label}
+    </label>
     <input
       name={name}
       disabled={disabled}
       value={value}
       onChange={onChange}
-      className={`w-full bg-transparent outline-none mt-1 ${disabled ? "text-gray-500" : ""
+      placeholder={placeholder}
+      className={`w-full px-4 py-2.5 rounded-lg border bg-white outline-none transition
+        ${
+          disabled
+            ? "bg-gray-100 text-gray-500 border-gray-200"
+            : "border-gray-300 focus:border-[#9810FA] focus:ring-2 focus:ring-purple-200"
         }`}
     />
   </div>

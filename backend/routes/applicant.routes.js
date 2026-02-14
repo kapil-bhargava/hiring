@@ -272,35 +272,6 @@ router.get("/applications/:userId", async (req, res) => {
 });
 
 
-
-// gettting all candidates for particular status
-// router.get("/applicants/job/:status", async (req, res) => {
-//     try {
-//         const applicants = await Applicant.find({
-//             status: req.params.status,
-//         })
-//             .populate("jobId", "title location")
-//             .populate({
-//                 path: "candidateId",
-//                 select: "location skills resume profilePic userId phone experience education",
-//                 populate: {
-//                     path: "userId",
-//                     select: "name email",
-//                 },
-//             });
-
-
-
-//         res.status(200).json({
-//             count: applicants.length,
-//             data: applicants,
-//         });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// });
-
-// latest 
 /**
  * @route   GET /api/applicants/job/:status
  * @desc    Get all applicants by status for admin panel
@@ -308,64 +279,114 @@ router.get("/applications/:userId", async (req, res) => {
  *          This ensures applicant profile does NOT change
  *          if candidate updates their profile later.
  */
-router.get("/applicants/job/:status", async (req, res) => {
-    try {
-        const { status } = req.params;
-
-        /**
-         * Fetch applicants by status
-         * - jobId is populated (job title & location are stable reference data)
-         * - candidateId is NOT populated (important)
-         * - snapshot contains frozen candidate info at apply-time
-         */
-        const applicants = await Applicant.find({ status })
-            .populate("jobId", "title location")
-            .select(
-                "jobId status appliedAt snapshot createdAt updatedAt"
-            )
-            .sort({ appliedAt: -1 }); // latest first (UX improvement)
-
-        /**
-         * Response structure remains admin-friendly
-         * Admin should always read candidate data from `snapshot`
-         */
-        res.status(200).json({
-            success: true,
-            count: applicants.length,
-            data: applicants,
-        });
-
-    } catch (error) {
-        console.error("Admin applicants fetch error:", error);
-
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
-    }
-});
-
-
-
-// gettinga all shortlisted candidates
-// router.get("/shortlisted", async (req, res) => {
+// router.get("/applicants/job/:status", async (req, res) => {
 //     try {
-//         const shortlisted = await Applicant.find({ status: "shortlisted" })
-//             .populate("userId")
-//             .populate("jobId", "title location");
+//         const { status } = req.params;
 
+//         /**
+//          * Fetch applicants by status
+//          * - jobId is populated (job title & location are stable reference data)
+//          * - candidateId is NOT populated (important)
+//          * - snapshot contains frozen candidate info at apply-time
+//          */
+//         const applicants = await Applicant.find({ status })
+//             .populate("jobId", "title location")
+//             .select(
+//                 "jobId status appliedAt snapshot createdAt updatedAt"
+//             )
+//             .sort({ appliedAt: -1 }); // latest first (UX improvement)
+
+//         /**
+//          * Response structure remains admin-friendly
+//          * Admin should always read candidate data from `snapshot`
+//          */
 //         res.status(200).json({
-//             count: shortlisted.length,
-//             data: shortlisted,
+//             success: true,
+//             count: applicants.length,
+//             data: applicants,
 //         });
+
 //     } catch (error) {
-//         res.status(500).json({ message: "Server error" });
+//         console.error("Admin applicants fetch error:", error);
+
+//         res.status(500).json({
+//             success: false,
+//             message: error.message,
+//         });
 //     }
 // });
+router.get("/applicants/job/:status", async (req, res) => {
+  try {
+    const { status } = req.params;
 
+    /**
+     * 🔍 Search query from frontend
+     * Example:
+     * /applicants/job/pending?search=kapil
+     */
+    const { search } = req.query;
 
+    /**
+     * 🎯 Step 1: Base query
+     * We always filter by status first
+     * because this API is status-specific
+     */
+    let query = { status };
 
-// latest 
+    /**
+     * 🔍 Step 2: Global search across snapshot + job data
+     * We search inside snapshot because it stores frozen candidate data
+     * This prevents data inconsistency if candidate updates profile later
+     */
+    if (search) {
+      query.$or = [
+        { "snapshot.name": { $regex: search, $options: "i" } },
+        { "snapshot.email": { $regex: search, $options: "i" } },
+        { "snapshot.phone": { $regex: search, $options: "i" } },
+        { "snapshot.location": { $regex: search, $options: "i" } },
+
+        { "snapshot.education.degree": { $regex: search, $options: "i" } },
+        { "snapshot.education.university": { $regex: search, $options: "i" } },
+
+        { "snapshot.experience.role": { $regex: search, $options: "i" } },
+        { "snapshot.experience.company": { $regex: search, $options: "i" } },
+
+        { "snapshot.skills": { $regex: search, $options: "i" } },
+        { "status": { $regex: search, $options: "i" } },
+        { "jobType": { $regex: search, $options: "i" } },
+      ];
+    }
+
+    /**
+     * 📦 Step 3: Fetch applicants
+     * - jobId populated for stable job reference
+     * - candidateId NOT populated (admin reads snapshot)
+     */
+    const applicants = await Applicant.find(query)
+      .populate("jobId", "title location")
+      .select("jobId status appliedAt snapshot createdAt updatedAt")
+      .sort({ appliedAt: -1 });
+
+    /**
+     * ✅ Step 4: Response for admin dashboard
+     * Snapshot is the source of truth for candidate data
+     */
+    res.status(200).json({
+      success: true,
+      count: applicants.length,
+      data: applicants,
+    });
+
+  } catch (error) {
+    console.error("Admin applicants fetch error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 
 /**
  * @route   GET /api/applicants/shortlisted
