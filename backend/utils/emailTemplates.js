@@ -1,3 +1,4 @@
+const link= "https://drive.google.com/file/d/1kuotwt3OgVB5wLr-nn54OPOJotQvfTEl/view";
 exports.applicationStatusTemplate = ({ name, jobTitle, status }) => {
   // Status-based configuration
   const statusConfig = {
@@ -38,7 +39,7 @@ exports.applicationStatusTemplate = ({ name, jobTitle, status }) => {
       <!-- Header -->
       <div style="background:#0f172a;padding:20px;text-align:center">
         <img 
-          src="https://veridia.in/logo.png"
+          src=${link}
           alt="Veridia"
           style="height:40px;margin-bottom:10px"
         />
