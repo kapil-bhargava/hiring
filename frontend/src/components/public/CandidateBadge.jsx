@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import avtar from "../../assets/int.png";
 
 import { confirmLogout } from "../../utils/confirmDialogue"
+import { FaSignOutAlt, FaTachometerAlt, FaUser } from "react-icons/fa";
 
 export default function CandidateBadge() {
     const [cookie, , removeCookie] = useCookies()
@@ -100,18 +101,19 @@ export default function CandidateBadge() {
                     <div className="p-2">
                         <Link
                             to="/candidate/profile"
-                            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100"
+                            className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-gray-100"
                             onClick={() => setOpen(false)}
                         >
+                            <FaUser />
                             Profile
                         </Link>
 
                         <Link
                             to="/candidate/dashboard"
-                            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100"
+                            className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-gray-100"
                             onClick={() => setOpen(false)}
                         >
-                            Dashboard
+                            <FaTachometerAlt /> Dashboard
                         </Link>
 
                         <button
@@ -119,9 +121,9 @@ export default function CandidateBadge() {
                                 setOpen(false);
                                 handleLogout()
                             }}
-                            className="w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
+                            className="flex gap-2 items-center w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
                         >
-                            Logout
+                         <FaSignOutAlt />   Logout
                         </button>
                     </div>
                 </div>

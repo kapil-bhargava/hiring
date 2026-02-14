@@ -205,7 +205,7 @@ const Rejectedlisted = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="py-8 text-center text-gray-500">
+                  <td colSpan="7" className="py-8 text-center text-gray-500">
                     No applicants found
                   </td>
                 </tr>

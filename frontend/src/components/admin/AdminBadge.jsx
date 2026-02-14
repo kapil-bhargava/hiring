@@ -4,6 +4,8 @@ import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import avtar from "../../assets/int.png";
 import adminavtar from "../../assets/adminavtart.jpg";
+import { confirmLogout } from "../../utils/confirmDialogue"
+import { FaSignOutAlt, FaTachometerAlt, FaUser } from "react-icons/fa";
 
 export default function AdminBadge() {
     const [cookie, , removeCookie] = useCookies()
@@ -24,15 +26,25 @@ export default function AdminBadge() {
 
 
 
-    const logout = () => {
-        removeCookie("admin")
-        navigate("/admin/login")
+    // const logout = () => {
+    //     removeCookie("admin")
+    //     navigate("/admin/login")
 
-    }
+    // }
 
-    useEffect(()=>{
+    // logout confirmatiuon
+    const handleLogout = async () => {
+        const ok = await confirmLogout();
+        if (ok) {
+            removeCookie("admin")
+            navigate("/admin/login")
+        }
+    };
+
+
+    useEffect(() => {
         console.log(cookie.admin)
-    },[])
+    }, [])
 
 
     const API = import.meta.env.VITE_APP_API;
@@ -93,12 +105,12 @@ export default function AdminBadge() {
                             className="w-16 h-16 mx-auto rounded-full mb-2"
                             alt="user"
                         /> */}
-                         <img
-                // src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200"
-                src={adminavtar}
-                alt="Profile"
-                className="w-10 h-10 rounded-full cursor-pointer  mx-auto border hover:ring-2 hover:ring-blue-500 transition"
-            />
+                        <img
+                            // src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200"
+                            src={adminavtar}
+                            alt="Profile"
+                            className="w-10 h-10 rounded-full cursor-pointer  mx-auto border hover:ring-2 hover:ring-blue-500 transition"
+                        />
                         <h4 className="font-semibold">{cookie.admin}</h4>
                         <p className="text-sm text-gray-500">{cookie.admin.toLowerCase() + "@gmail.com"}</p>
                     </div>
@@ -107,28 +119,28 @@ export default function AdminBadge() {
                     <div className="p-2">
                         <Link
                             to="/admin/profile"
-                            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100"
+                            className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-gray-100"
                             onClick={() => setOpen(false)}
                         >
-                            Profile
+                           <FaUser /> Profile
                         </Link>
 
                         <Link
                             to="/admin/dashboard"
-                            className="flex items-center px-4 py-2 rounded-lg hover:bg-gray-100"
+                            className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-gray-100"
                             onClick={() => setOpen(false)}
                         >
-                            Dashboard
+                           <FaTachometerAlt />  Dashboard
                         </Link>
 
                         <button
                             onClick={() => {
                                 setOpen(false);
-                                logout();
+                                handleLogout()
                             }}
-                            className="w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
+                            className=" flex  items-center gap-2 w-full text-left px-4 py-2 rounded-lg text-red-600 hover:bg-red-50"
                         >
-                            Logout
+                         <FaSignOutAlt />    Logout
                         </button>
                     </div>
                 </div>

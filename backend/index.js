@@ -50,4 +50,5 @@ app.use("/api", candidateRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
+  console.log(`connecting to db...`);
 });
