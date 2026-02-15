@@ -3,16 +3,18 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import {
   FaBriefcase,
-  FaClipboardList,
   FaUserCheck,
+  FaUserTimes,
+  FaClock,
   FaCalendarAlt,
 } from "react-icons/fa";
-
 
 const CandidateDashboard = () => {
 
   const [shortListed, setShortListed] = useState(0)
   const [applied, setSetApplied] = useState(0)
+  const [pending, setPending] = useState(0)
+  const [rejectedCount, setrejectedCount] = useState(0)
   const [cookie,,] = useCookies()
 
   const userId = cookie.user._id
@@ -22,32 +24,54 @@ const CandidateDashboard = () => {
   }
   const getApplied = async () => {
     const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/applicants/count/pending/${userId}`)
-    setSetApplied(res.data.count + shortListed)
+    setSetApplied(res.data.count + shortListed + rejectedCount)
+    setPending(res.data.count)
+  }
+  const getRejected = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/applicants/count/rejected/${userId}`)
+    setrejectedCount(res.data.count)
   }
 
   useEffect(() => {
     getApplied()
+    getRejected()
     getShortlisted()
     document.title = "Candidate Dashboard"
   })
 
-    const stats = [
-    {
-      id: 1,
-      title: "Applied Jobs",
-      value: applied,
-      icon: <FaBriefcase />,
-      color: "bg-purple-100 text-purple-600",
-    },
+const stats = [
+  {
+    id: 1,
+    title: "Applied Jobs",
+    value: applied,
+    icon: <FaBriefcase />,
+    color: "bg-purple-100 text-[#9810FA]",
+  },
 
-    {
-      id: 2,
-      title: "Shortlisted",
-      value: shortListed,
-      icon: <FaUserCheck />,
-      color: "bg-green-100 text-green-600",
-    },
-  ];
+  {
+    id: 2,
+    title: "Shortlisted",
+    value: shortListed,
+    icon: <FaUserCheck />,
+    color: "bg-green-100 text-green-600",
+  },
+
+  {
+    id: 3,
+    title: "Rejected",
+    value: rejectedCount,
+    icon: <FaUserTimes />,
+    color: "bg-red-100 text-red-600",
+  },
+
+  {
+    id: 4,
+    title: "Pending",
+    value: pending,
+    icon: <FaClock />,
+    color: "bg-yellow-100 text-yellow-600",
+  },
+];
 
 
   return (
