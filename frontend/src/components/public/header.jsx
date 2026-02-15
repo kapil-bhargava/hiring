@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Link, Links } from 'react-router-dom'
+import { Link, Links, useLocation } from 'react-router-dom'
 import logo from '../../assets/logo.jpeg'
 import { useCookies } from 'react-cookie'
 import CandidateBadge from './CandidateBadge'
@@ -7,10 +7,17 @@ import CandidateBadge from './CandidateBadge'
 const Header = () => {
     const [cookie, ,] = useCookies()
 
-    useEffect(()=>{
+    useEffect(() => {
         document.title = "Header"
-      })
-    
+    })
+
+
+    const location = useLocation()
+
+    useEffect(() => {
+        console.log(location.pathname)
+    }, [])
+
     return (
         <>
             {/* ================= Header ================= */}
@@ -35,7 +42,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/"
-                                    className="relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full"
+                                    className={`relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full ${location.pathname === "/" ? "text-purple-600 border-purple-600 border-b border-b-2" : ""}`}
                                 >
                                     Home
                                 </Link>
@@ -44,7 +51,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/jobs"
-                                    className="relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full"
+                                    className={`relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full ${location.pathname === "/jobs" ? "text-purple-600 border-purple-600 border-b border-b-2" : ""}`}
                                 >
                                     Jobs
                                 </Link>
@@ -53,7 +60,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/about"
-                                    className="relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full"
+                                     className={`relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full ${location.pathname === "/about" ? "text-purple-600 border-purple-600 border-b border-b-2" : ""}`}
                                 >
                                     About
                                 </Link>
@@ -62,7 +69,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     to="/contact"
-                                    className="relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full"
+                                     className={`relative text-gray-600 transition duration-300 hover:text-purple-600 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-purple-600 after:transition-all after:duration-300 hover:after:w-full ${location.pathname === "/contact" ? "text-purple-600 border-purple-600 border-b border-b-2" : ""}`}
                                 >
                                     Contact
                                 </Link>

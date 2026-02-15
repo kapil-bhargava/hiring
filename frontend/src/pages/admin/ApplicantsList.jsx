@@ -78,7 +78,7 @@ const ApplicantsList = () => {
     }
   };
 
-  
+
   const getSelectedJobApplicants = async (jobId) => {
     try {
       const res = await axios.get(`${API}/api/applicants/${jobId}`);
@@ -190,130 +190,229 @@ const ApplicantsList = () => {
           </button> */}
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
-              <tr>
-                <th className="px-5 py-3">#</th>
-                <th className="px-5 py-3">Candidate</th>
-                <th className="px-5 py-3">Job</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3">Applied At</th>
-                <th className="px-5 py-3">Resume Link</th>
-                <th className="px-5 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
+        {/* ================= DESKTOP TABLE ================= */}
+        <div className="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-purple-50 text-gray-700 uppercase text-xs sticky top-0">
+                <tr>
+                  <th className="px-5 py-3">#</th>
+                  <th className="px-5 py-3">Candidate</th>
+                  <th className="px-5 py-3">Job</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Applied</th>
+                  <th className="px-5 py-3">Resume</th>
+                  <th className="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
 
-            <tbody className="divide-y">
-              {applicants.length > 0 ? (
-                applicants.map((applicant, i) => (
-                  <tr
-                    key={applicant._id}
-                    className="hover:bg-gray-50 transition"
-                  >
-                    {/* S.No */}
-                    <td className="px-5 py-4 font-medium text-gray-600">
-                      {i + 1}
-                    </td>
+              <tbody className="divide-y">
+                {applicants.length > 0 ? (
+                  applicants.map((applicant, i) => (
+                    <tr key={applicant._id} className="hover:bg-purple-50 transition">
+                      <td className="px-5 py-4 font-medium text-gray-600">
+                        {i + 1}
+                      </td>
 
-                    {/* Candidate */}
-                    <td className="px-5 py-4">
-                      <div className="flex gap-2">
+                      {/* Candidate */}
+                      <td className="px-5 py-4">
+                        <div className="flex gap-3 items-center">
+                          <img
+                            src={
+                              import.meta.env.VITE_APP_API +
+                              applicant.snapshot?.profilePic?.fileUrl || avtar
+                            }
+                            alt="profile"
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
 
-                        <img src={import.meta.env.VITE_APP_API + applicant.snapshot?.profilePic?.fileUrl || avtar} alt={applicant.snapshot?.fileName || "Profile"} className="w-10 h-10 rounded-full object-cover mb-2" />
-                        <div className="flex flex-col">
-                          <span className="font-medium text-gray-800">
-                            {applicant.snapshot.name || "Unknown Candidate"}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {applicant.snapshot.email || "No email"}
-                          </span>
+                          <div>
+                            <p className="font-medium text-gray-800">
+                              {applicant.snapshot.name || "Unknown"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {applicant.snapshot.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Job */}
-                    <td className="px-5 py-4 text-gray-700">
-                      {applicant.jobId.title || applicant.title}
-                    </td>
+                      <td className="px-5 py-4">
+                        {applicant.jobId.title || "Job deleted"}
+                      </td>
 
-                    {/* Status */}
-                    <td className="px-5 py-4">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full
+                      {/* Status */}
+                      <td className="px-5 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium capitalize
                   ${applicant.status === "shortlisted"
-                            ? "bg-green-100 text-green-700"
-                            : applicant.status === "rejected"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}
-                      >
-                        {applicant.status}
-                      </span>
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <span className="text-xs text-gray-500">
-                        {/* {new Date(applicant.createdAt).toLocaleDateString()} <br />
-                        {new Date(applicant.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} */}
-                        {formatDateTime(applicant.appliedAt).split(",")[0]} <br />
-                        {formatDateTime(applicant.appliedAt).split(",")[1].trim()}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4">
-                      {applicant.snapshot?.resume ? (
-                        <a
-                          href={import.meta.env.VITE_APP_API + applicant.snapshot.resume.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline text-xs"
+                              ? "bg-green-100 text-green-700"
+                              : applicant.status === "rejected"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
                         >
-                          View Resume
-                        </a>
-                      ) : (
-                        <span className="text-gray-500 text-xs">No Resume</span>
-                      )}
-                    </td>
+                          {applicant.status}
+                        </span>
+                      </td>
 
-                    {/* Actions */}
-                    <td className="px-5 py-4">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => updateApplicantStatus(applicant._id, "shortlisted")}
-                          className="px-3 py-1.5 text-xs font-medium rounded-md bg-green-600 text-white hover:bg-green-700 transition">
-                          Shortlist
-                        </button>
+                      <td className="px-5 py-4 text-xs text-gray-500">
+                        {formatDateTime(applicant.appliedAt)}
+                      </td>
 
-                        <button
-                          onClick={() => updateApplicantStatus(applicant._id, "rejected")}
-                          className="px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition">
-                          Reject
-                        </button>
+                      <td className="px-5 py-4">
+                        {applicant.snapshot?.resume ? (
+                          <a
+                            href={
+                              import.meta.env.VITE_APP_API +
+                              applicant.snapshot.resume.fileUrl
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#9810FA] font-medium hover:underline text-xs"
+                          >
+                            View Resume
+                          </a>
+                        ) : (
+                          "No resume"
+                        )}
+                      </td>
 
-                        {/* <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
-                          View
-                        </button> */}
-                        {/* <button
-                          onClick={() => setSelectedCandidate(applicant.snapshot)}
-                          className="text-indigo-600 hover:underline"
-                        >
-                          View
-                        </button> */}
-                      </div>
+                      {/* Actions */}
+                      <td className="px-5 py-4">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() =>
+                              updateApplicantStatus(
+                                applicant._id,
+                                "shortlisted"
+                              )
+                            }
+                            className="px-3 py-1.5 text-xs rounded-md bg-green-600 text-white hover:bg-green-700"
+                          >
+                            Shortlist
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              updateApplicantStatus(applicant._id, "rejected")
+                            }
+                            className="px-3 py-1.5 text-xs rounded-md bg-red-600 text-white hover:bg-red-700"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : jobloader ? null : (
+                  <tr>
+                    <td colSpan="7" className="py-8 text-center text-gray-500">
+                      No applicants found
                     </td>
                   </tr>
-                ))
-              ) : jobloader ? null :(
-                <tr>
-                  <td colSpan="7" className="py-8 text-center text-gray-500">
-                    No applicants found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        {/* ================= MOBILE CARDS ================= */}
+        <div className="md:hidden space-y-4">
+          {applicants.length > 0 ? (
+            applicants.map((applicant, i) => (
+              <div
+                key={applicant._id}
+                className="bg-white rounded-xl shadow border p-4"
+              >
+                {/* Top */}
+                <div className="flex items-center gap-3">
+                  <img
+                    src={
+                      import.meta.env.VITE_APP_API +
+                      applicant.snapshot?.profilePic?.fileUrl || avtar
+                    }
+                    alt="profile"
+                    className="w-12 h-12 rounded-full"
+                  />
+
+                  <div>
+                    <p className="font-semibold">
+                      {applicant.snapshot.name || "Unknown"}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {applicant.snapshot.email}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Job */}
+                <div className="mt-3 text-sm">
+                  <span className="font-medium">Job:</span>{" "}
+                  {applicant.jobId.title || "Deleted"}
+                </div>
+
+                {/* Status */}
+                <div className="mt-2">
+                  <span
+                    className={`px-3 py-1 text-xs rounded-full capitalize
+              ${applicant.status === "shortlisted"
+                        ? "bg-green-100 text-green-700"
+                        : applicant.status === "rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                  >
+                    {applicant.status}
+                  </span>
+                </div>
+
+                {/* Date */}
+                <div className="text-xs text-gray-500 mt-2">
+                  {formatDateTime(applicant.appliedAt)}
+                </div>
+
+                {/* Resume */}
+                {applicant.snapshot?.resume && (
+                  <a
+                    href={
+                      import.meta.env.VITE_APP_API +
+                      applicant.snapshot.resume.fileUrl
+                    }
+                    target="_blank"
+                    className="block text-[#9810FA] text-sm mt-2"
+                  >
+                    View Resume
+                  </a>
+                )}
+
+                {/* Actions */}
+                <div className="flex gap-2 mt-4">
+                  <button
+                    onClick={() =>
+                      updateApplicantStatus(applicant._id, "shortlisted")
+                    }
+                    className="flex-1 bg-green-600 text-white py-2 rounded-lg"
+                  >
+                    Shortlist
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateApplicantStatus(applicant._id, "rejected")
+                    }
+                    className="flex-1 bg-red-600 text-white py-2 rounded-lg"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : jobloader ? null : (
+            <p className="text-center text-gray-500">No applicants found</p>
+          )}
+        </div>
+
 
       </div>
 

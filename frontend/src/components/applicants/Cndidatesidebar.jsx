@@ -21,6 +21,7 @@ const CandidateSidebar = ({ isOpen, setIsOpen }) => {
     { name: "Browse Jobs", icon: <FaSearch />, path: "/candidate/browse-jobs" },
     { name: "Applied Jobs", icon: <FaBriefcase />, path: "/candidate/applied-jobs" },
     { name: "Profile", icon: <FaUser />, path: "/candidate/profile" },
+    { name: "Settings", icon: <FaUser />, path: "/candidate/settings" },
   ];
 
   useEffect(() => {

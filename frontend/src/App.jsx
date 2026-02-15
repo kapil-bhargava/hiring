@@ -32,6 +32,7 @@ import Toast from './components/toast'
 import Rejectedlisted from './pages/admin/Rejected'
 import AdminProfile from './pages/admin/AdminProfile'
 import NotFound from './components/NotFound'
+import ChangePassword from './pages/applicants/ChangePassword'
 function App() {
 
   return (
@@ -59,8 +60,9 @@ function App() {
           <Route path='editprofile' element={<EditProfile />} />
           <Route path='applied-jobs' element={<AppliedJobs />} />
           <Route path='saved-jobs' element={<SavedJobs />} />
-          <Route path='settings' element={<CandidateSettings />} />
+          {/* <Route path='settings' element={<CandidateSettings />} /> */}
           <Route path='interviews' element={<CandidateInterviews />} />
+          <Route path='settings' element={<ChangePassword />} />
           <Route path="*" element={<NotFound/>} />
         </Route>
         <Route path="bb" element={<CandidateBadge />} />
