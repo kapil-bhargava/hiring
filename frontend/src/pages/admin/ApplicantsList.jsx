@@ -294,12 +294,12 @@ const ApplicantsList = () => {
                         {/* <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
                           View
                         </button> */}
-                        <button
+                        {/* <button
                           onClick={() => setSelectedCandidate(applicant.snapshot)}
                           className="text-indigo-600 hover:underline"
                         >
                           View
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>

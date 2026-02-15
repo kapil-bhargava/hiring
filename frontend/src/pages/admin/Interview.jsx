@@ -32,6 +32,11 @@ const Interview = () => {
     <Fragment>
       <div className="min-h-screen bg-slate-100 p-4 md:p-6">
 
+        <div className="z-4 absolute left-0 top-0 bg-green-100 opacity-35 w-full h-full flex items-center justify-center text-xl text-black-500">
+          The page is not in Task
+        
+        </div>
+
         {/* Header */}
         <header className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 md:p-6 rounded-xl shadow mb-6">
           <h1 className="text-xl md:text-2xl font-semibold text-white">

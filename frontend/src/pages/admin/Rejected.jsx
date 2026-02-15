@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
 import formatDateTime from "../../utils/dateFormatter";
 import avtar from "../../assets/int.png";
+import { showToast } from "../../components/Toast";
 
 const Rejectedlisted = () => {
 
@@ -29,18 +30,13 @@ const Rejectedlisted = () => {
   const [mode, setMode] = useState("");
   const [date, setDate] = useState("");
 
-  /* Filter logic */
-  // const filteredCandidates = shortlistedCandidates.filter((c) => {
-  //   const matchesSearch =
-  //     c.name.toLowerCase().includes(search.toLowerCase()) ||
-  //     c.role.toLowerCase().includes(search.toLowerCase()) ||
-  //     c.email.toLowerCase().includes(search.toLowerCase());
+  const scheduleInterview = async (applicantId) => {
+    showToast("Not in Task")
+  };
+  const viewApplicant = async (applicantId) => {
+    showToast("Not in Task")
+  };
 
-  //   const matchesMode = mode ? c.interviewMode === mode : true;
-  //   const matchesDate = date ? c.interviewDate === date : true;
-
-  //   return matchesSearch && matchesMode && matchesDate;
-  // });
 
 
 
@@ -105,7 +101,7 @@ const Rejectedlisted = () => {
                 <th className="px-4 py-3">S.n</th>
                 <th className="px-4 py-3">Candidate Name</th>
                 <th className="px-4 py-3">Applied Job</th>
-                <th className="px-4 py-3">Rejected on</th>
+                {/* <th className="px-4 py-3">Rejected on</th> */}
                 <th className="px-4 py-3">Current Status</th>
                 <th className="px-4 py-3">Resume Link</th>
                 <th className="px-4 py-3">Action</th>
@@ -146,10 +142,10 @@ const Rejectedlisted = () => {
                     </td>
 
                     {/* Shortlisted on */}
-                    <td className="px-5 py-4 text-gray-700">
+                    {/* <td className="px-5 py-4 text-gray-700">
                       {applicant.rejectedAt ? formatDateTime(applicant.rejectedAt).split(",")[0] : "N/A"} <br />
                       {applicant.rejectedAt ? formatDateTime(applicant.rejectedAt).split(",")[1].trim() : "N/A"}
-                    </td>
+                    </td> */}
 
                     {/* Status */}
                     <td className="px-5 py-4">
@@ -191,12 +187,15 @@ const Rejectedlisted = () => {
                         </button> */}
 
                         <button
-                          onClick={() => updateApplicantStatus(applicant._id, "rejected")}
+                          onClick={() => scheduleInterview(applicant._id, "interview")}
                           className="px-3 py-1.5 text-xs font-medium rounded-md bg-red-600 text-white hover:bg-red-700 transition">
                           Interview
                         </button>
 
-                        <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+                        <button
+                          onClick={() => viewApplicant(applicant._id)}
+                          className="px-3 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition">
+
                           View
                         </button>
                       </div>

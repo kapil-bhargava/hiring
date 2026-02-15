@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import {
   FaBriefcase,
   FaClipboardList,
@@ -8,44 +10,49 @@ import {
 
 
 const CandidateDashboard = () => {
-  const stats = [
-    {
-      id: 1,
-      title: "Applied Jobs",
-      value: 5,
-      icon: <FaBriefcase />,
-      color: "bg-purple-100 text-purple-600",
-    },
-    {
-      id: 2,
-      title: "Applications Status",
-      value: "In Review",
-      icon: <FaClipboardList />,
-      color: "bg-blue-100 text-blue-600",
-    },
-    {
-      id: 3,
-      title: "Shortlisted",
-      value: 2,
-      icon: <FaUserCheck />,
-      color: "bg-green-100 text-green-600",
-    },
-    {
-      id: 4,
-      title: "Upcoming Interviews",
-      value: 1,
-      icon: <FaCalendarAlt />,
-      color: "bg-indigo-100 text-indigo-600",
-    },
-  ];
 
-  useEffect(()=>{
+  const [shortListed, setShortListed] = useState(0)
+  const [applied, setSetApplied] = useState(0)
+  const [cookie,,] = useCookies()
+
+  const userId = cookie.user._id
+  const getShortlisted = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/applicants/count/shortlisted/${userId}`)
+    setShortListed(res.data.count)
+  }
+  const getApplied = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/applicants/count/pending/${userId}`)
+    setSetApplied(res.data.count + shortListed)
+  }
+
+  useEffect(() => {
+    getApplied()
+    getShortlisted()
     document.title = "Candidate Dashboard"
   })
 
+    const stats = [
+    {
+      id: 1,
+      title: "Applied Jobs",
+      value: applied,
+      icon: <FaBriefcase />,
+      color: "bg-purple-100 text-purple-600",
+    },
+
+    {
+      id: 2,
+      title: "Shortlisted",
+      value: shortListed,
+      icon: <FaUserCheck />,
+      color: "bg-green-100 text-green-600",
+    },
+  ];
+
+
   return (
     <>
-      
+
       <div className="min-h-screen bg-gray-100 p-4 md:p-6">
 
         {/* Header */}
@@ -81,7 +88,7 @@ const CandidateDashboard = () => {
         </section>
 
         {/* Recent Activity */}
-        <section className="bg-white rounded-xl shadow p-6">
+        <section className="bg-white rounded-xl shadow p-6 hidden">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Recent Activity
           </h2>

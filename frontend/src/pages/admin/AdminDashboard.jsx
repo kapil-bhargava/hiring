@@ -1,25 +1,32 @@
-import React, { Fragment, useEffect } from "react";
+import axios from "axios";
+import React, { Fragment, useEffect, useState } from "react";
 
-const stats = [
-  { id: 1, title: "Total Users", value: "1,520" },
-  { id: 2, title: "Active Jobs", value: "34" },
-  { id: 3, title: "Monthly Revenue", value: "₹1,20,000" },
-];
-
-const recentCandidates = [
-  { id: 1, name: "Ramesh Kumar", email: "ramesh@gmail.com" },
-  { id: 2, name: "Sita Devi", email: "sita@gmail.com" },
-  { id: 3, name: "Amit Singh", email: "amit@gmail.com" },
-];
-
-const recentApplications = [
-  { id: 1, job: "Frontend Intern", applicant: "Ramesh Kumar" },
-  { id: 2, job: "Backend Developer", applicant: "Sita Devi" },
-  { id: 3, job: "Data Analyst", applicant: "Amit Singh" },
-];
 
 const AdminDashboard = () => {
-  useEffect(()=>{
+  const [totalJobs, setTotalJObs] = useState(0)
+  const [totalUsers, setTotalUsers] = useState(0)
+  const [totalApplicants, setTotalApplicants] = useState(0)
+  const stats = [
+    { id: 1, title: "Total Users", value: totalUsers },
+    { id: 2, title: "Total Jobs", value: totalUsers },
+    { id: 3, title: "Total Applicants", value: totalApplicants },
+  ];
+  
+
+
+  const getApplicants = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/applicants/count`)
+    setTotalApplicants(res.data.count)
+    console.log(res.data)
+  }
+  const getUsers = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_APP_API}/api/users/count`)
+    setTotalUsers(res.data.count)
+    console.log(res.data)
+  }
+  useEffect(() => {
+    getApplicants()
+    getUsers()
     document.title = "Admin Dashboard"
   })
   return (
@@ -55,50 +62,20 @@ const AdminDashboard = () => {
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Recent Candidate Signup */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          {/* <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h2 className="text-sm font-semibold text-purple-600 mb-4">
               Recent Candidate Signups
             </h2>
 
-            <ul className="space-y-3">
-              {recentCandidates.map((candidate) => (
-                <li
-                  key={candidate.id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <span className="font-medium text-gray-700">
-                    {candidate.name}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {candidate.email}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </div> */}
 
           {/* Recent Job Applications */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          {/* <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h2 className="text-sm font-semibold text-purple-600 mb-4">
               Recent Job Applications
             </h2>
 
-            <ul className="space-y-3">
-              {recentApplications.map((app) => (
-                <li
-                  key={app.id}
-                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <span className="font-medium text-gray-700">
-                    {app.applicant}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {app.job}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </div> */}
 
         </section>
       </div>

@@ -25,6 +25,7 @@ const Shortlisted = () => {
     getAllApplicants()
   }, [])
 
+
   /* Filter state */
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState("");
@@ -69,7 +70,7 @@ const Shortlisted = () => {
         </header>
 
         {/* Filters */}
-        <div className="bg-white p-4 rounded-xl shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-xl shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 hidden">
           <input
             type="text"
             placeholder="Search Name / Role / Email"
@@ -115,7 +116,7 @@ const Shortlisted = () => {
                 <th className="px-4 py-3">S.n</th>
                 <th className="px-4 py-3">Candidate Name</th>
                 <th className="px-4 py-3">Applied Job</th>
-                <th className="px-4 py-3">shortlisted on</th>
+                {/* <th className="px-4 py-3">shortlisted on</th> */}
                 <th className="px-4 py-3">Current Status</th>
                 <th className="px-4 py-3">Resume Link</th>
                 <th className="px-4 py-3">Action</th>
@@ -156,10 +157,10 @@ const Shortlisted = () => {
                     </td>
 
                     {/* Shortlisted on */}
-                    <td className="px-5 py-4 text-gray-700">
+                    {/* <td className="px-5 py-4 text-gray-700">
                       {applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[0] : "N/A"} <br />
                       {applicant.shortlistedAt ? formatDateTime(applicant.shortlistedAt).split(",")[1].trim() : "N/A"}
-                    </td>
+                    </td> */}
 
                     {/* Status */}
                     <td className="px-5 py-4">

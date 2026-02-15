@@ -121,4 +121,15 @@ router.post("/login", async (req, res) => {
     }
 });
 
+
+// getting all applicants counts 
+router.get("/users/count", async (req, res) => {
+    try{
+        let users = await Signup.find()
+        res.json({count:users.length})
+    }catch(err){
+        res.json({message:err.message})
+    }
+})
+
 module.exports = router;

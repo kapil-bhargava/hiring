@@ -31,6 +31,7 @@ import CandidateInterviews from './pages/applicants/CndidateInterview'
 import Toast from './components/toast'
 import Rejectedlisted from './pages/admin/Rejected'
 import AdminProfile from './pages/admin/AdminProfile'
+import NotFound from './components/NotFound'
 function App() {
 
   return (
@@ -47,7 +48,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<h1>No ppage</h1>} />
+          <Route path="*" element={<NotFound/>} />
         </Route>
 
         {/* ============== for the Cndidate section============ */}
@@ -60,7 +61,7 @@ function App() {
           <Route path='saved-jobs' element={<SavedJobs />} />
           <Route path='settings' element={<CandidateSettings />} />
           <Route path='interviews' element={<CandidateInterviews />} />
-          <Route path="*" element={<h1>No ppage</h1>} />
+          <Route path="*" element={<NotFound/>} />
         </Route>
         <Route path="bb" element={<CandidateBadge />} />
 
@@ -76,7 +77,7 @@ function App() {
           <Route path="interview" element={<Interview />} />
           <Route path="usersign" element={<SignUpTable />} />
           <Route path="profile" element={<AdminProfile />} />
-          <Route path="*" element={<h1>No ppage</h1>} />
+          <Route path="*" element={<NotFound/>} />
         </Route>
 
         <Route path="/admin/login" element={<Login />} />

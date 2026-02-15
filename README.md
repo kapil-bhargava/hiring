@@ -1,54 +1,240 @@
-## Overview
-The Veridia Hiring Platform is a recruitment management system designed to simplify Veridia’s hiring workflow. It replaces form-based hiring methods (such as Google Forms) with a structured, centralized platform that helps manage job openings and candidate applications efficiently.
+## Veridia Hiring Platform (MERN Stack)
 
+A modern and professional hiring platform built for Veridia to streamline candidate applications and improve the recruitment workflow. This system replaces manual tools like Google Forms with an automated, structured, and user-friendly platform.
 
-## Purpose
+The project was developed as part of an internship task and successfully completed with all required features.
 
-Veridia’s hiring process required a more organized and scalable approach than collecting responses through forms and spreadsheets. This platform streamlines the entire recruitment flow, making it easier for HR teams to manage candidates, track progress, and make hiring decisions.
+📌 Overview
 
-## Key Benefits
+The Veridia Hiring Platform allows candidates to apply for job roles and track their application status, while HR/admin users can manage applications, shortlist candidates, and send automated email updates.
 
-Eliminates manual handling of Google Form responses
-Centralized storage of candidate data
-Easy tracking of hiring stages
-Faster shortlisting and decision-making
-Improved recruitment efficiency
+The platform focuses on:
 
-## HR / Recruiter7
+A clean and modern UI
 
-Create and manage job openings
-View all candidate applications in one dashboard
-Filter and shortlist candidates
-Update application status (Applied, Shortlisted, Interviewed, Selected)
-Maintain organized hiring records
+Structured application workflow
 
-## Candidate
+Automated email notifications
 
-Simple job application process
-Profile creation with resume upload
-Apply for Veridia job openings
-Track application status
+Real-time application tracking
 
-## Tech Stack
+Efficient admin dashboard
 
-Frontend: React.js, HTML, CSS, JavaScript
-Backend: Node.js, Express.js
-Database: MongoDB
-Authentication: JWT
+🎯 Key Objectives
 
-## Workflow
+Provide a professional hiring experience
 
-HR posts job openings
-Candidates submit applications through the platform
-Applications are stored and organized automatically
-HR reviews, shortlists, and updates candidate status
-Hiring progress is tracked in real time
+Simplify job application management
 
-## Project Setup
-git clone https://github.com/satyam1919maurya/veridia.git
-cd veridia
+Enable candidates to track their application progress
+
+Allow HR to manage and filter applications efficiently
+
+Automate status update emails
+
+Improve transparency in the hiring process
+
+🛠️ Tech Stack
+Frontend
+
+React (Vite)
+
+Tailwind CSS
+
+React Router DOM
+
+Axios
+
+SweetAlert2
+
+React Toastify
+
+Backend
+
+Node.js
+
+Express.js
+
+MongoDB
+
+Mongoose
+
+Nodemailer
+
+Multer (file uploads)
+
+⚡ Features Implemented
+👨‍💻 Candidate Side
+
+User registration and login
+
+Profile management
+
+Resume and profile image upload
+
+Browse job openings
+
+Apply for jobs
+
+Track application status (Pending, Shortlisted, Rejected)
+
+Email notifications for updates
+
+🧑‍💼 Admin (HR) Side
+
+Admin authentication
+
+Create and manage job postings
+
+View applicants
+
+Filter and search candidates
+
+Shortlist or reject candidates
+
+Automated email status updates
+
+Dashboard with structured applicant data
+
+📩 Automated Email System
+
+The platform sends professional email notifications:
+
+On job application submission
+
+On status updates (Shortlisted / Rejected)
+
+Structured and branded email templates
+
+🗂️ Project Structure
+veridia/
+│
+├── backend/
+│   ├── config/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── uploads/
+│   ├── utils/
+│   └── index.js
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── utils/
+│   │   └── App.jsx
+⚙️ Environment Setup
+🔹 Backend .env
+MONGO_URI=mongodb+srv://rishabhmaurya7523_db_user:8vHDDSi3zsVJuKO1@cluster0.fdgig6y.mongodb.net/veridiadb
+MAIL_USER=ssatyam0411@gmail.com
+MAIL_PASS=gzso tqov hmps kjth
+API=http://localhost:5173
+PORT=5000
+🔹 Frontend .env
+VITE_APP_API=http://localhost:5000
+📦 Installation & Setup
+1️⃣ Clone Repository
+git clone https://github.com/satyam1919maurya/veridia
+2️⃣ Backend Setup
+cd backend
 npm install
-npm start
+node index.js
+3️⃣ Frontend Setup
+cd frontend
+npm install
+npm run dev
 
-## License
-This project is developed for Veridia’s hiring workflow and for internship task
+The app will run on:
+
+Frontend → http://localhost:5173
+Backend → http://localhost:5000
+📊 Database Design
+Collections:
+
+Users
+
+Candidates
+
+Jobs
+
+Applicants
+
+Applicant snapshot system ensures data consistency even if candidates update profiles later.
+
+🔐 Authentication
+
+Basic authentication and role-based routing are implemented. JWT is installed but not used in the current version.
+
+✉️ Email Workflow
+
+Automated emails are sent when:
+
+A candidate applies
+
+HR updates application status
+
+This improves communication and candidate experience.
+
+## 🔑 Admin Login Access
+
+The platform includes a predefined admin panel for demonstration and testing purposes. The admin authentication is currently implemented on the frontend with hardcoded credentials.
+To access the admin dashboard:
+/admin/login
+http://localhost:5173/admin/login
+
+Email: Admin  
+Password: 123
+
+These credentials are hardcoded in the frontend for development and internship evaluation purposes.
+This allows quick access to the admin dashboard without backend authentication.
+In a production environment, admin authentication should be secured and implemented on the backend with proper role-based access and encrypted credentials.
+
+
+
+🧪 API Overview
+Authentication
+POST /api/auth/register
+POST /api/auth/login
+Candidate
+GET /api/candidate/profile
+PATCH /api/candidate/profile
+Jobs
+GET /api/jobs
+POST /api/jobs
+Applications
+POST /api/applicants
+GET /api/applicants
+PUT /api/applicants/:id/status
+📌 Completed Internship Task
+
+This project successfully fulfills the internship requirements by delivering a full-stack hiring platform with modern UI, backend automation, and real-world workflow design.
+
+🚀 Future Enhancements
+
+Email verification
+
+Advanced HR filters
+
+Analytics dashboard
+
+Multi-role access
+
+Interview scheduling
+
+Resume AI screening
+
+Notification center
+
+📄 License
+
+This project is developed for educational and internship purposes.
+
+💡 Conclusion
+
+The Veridia Hiring Platform demonstrates strong full-stack development skills using the MERN stack and provides a scalable foundation for future hiring automation systems.
+
+⭐ If you like this project, feel free to explore and improve it further.

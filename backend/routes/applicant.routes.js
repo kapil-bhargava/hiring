@@ -156,6 +156,18 @@ router.post("/apply", async (req, res) => {
     }
 });
 
+// getting all applicants counts 
+router.get("/applicants/count", async (req, res) => {
+    try {
+        let applicants = await Applicant.find()
+        res.json({ count: applicants.length })
+    } catch (err) {
+        res.json({ message: err.message })
+    }
+})
+
+
+
 
 
 
@@ -315,76 +327,90 @@ router.get("/applications/:userId", async (req, res) => {
 //         });
 //     }
 // });
-router.get("/applicants/job/:status", async (req, res) => {
-  try {
-    const { status } = req.params;
 
-    /**
-     * 🔍 Search query from frontend
-     * Example:
-     * /applicants/job/pending?search=kapil
-     */
-    const { search } = req.query;
-
-    /**
-     * 🎯 Step 1: Base query
-     * We always filter by status first
-     * because this API is status-specific
-     */
-    let query = { status };
-
-    /**
-     * 🔍 Step 2: Global search across snapshot + job data
-     * We search inside snapshot because it stores frozen candidate data
-     * This prevents data inconsistency if candidate updates profile later
-     */
-    if (search) {
-      query.$or = [
-        { "snapshot.name": { $regex: search, $options: "i" } },
-        { "snapshot.email": { $regex: search, $options: "i" } },
-        { "snapshot.phone": { $regex: search, $options: "i" } },
-        { "snapshot.location": { $regex: search, $options: "i" } },
-
-        { "snapshot.education.degree": { $regex: search, $options: "i" } },
-        { "snapshot.education.university": { $regex: search, $options: "i" } },
-
-        { "snapshot.experience.role": { $regex: search, $options: "i" } },
-        { "snapshot.experience.company": { $regex: search, $options: "i" } },
-
-        { "snapshot.skills": { $regex: search, $options: "i" } },
-        { "status": { $regex: search, $options: "i" } },
-        { "jobType": { $regex: search, $options: "i" } },
-      ];
+// getting counts of applicants based on status and userId
+router.get("/applicants/count/:status/:userId", async (req, res) => {
+    try {
+        const { userId, status } = req.params
+        const cand = await Candidate.findOne({ userId });
+        const applications = await Applicant.find({ candidateId:cand._id, status })
+        res.json({ count: applications.length })
+    } catch (err) {
+        res.json({ message: err.message })
     }
+})
 
-    /**
-     * 📦 Step 3: Fetch applicants
-     * - jobId populated for stable job reference
-     * - candidateId NOT populated (admin reads snapshot)
-     */
-    const applicants = await Applicant.find(query)
-      .populate("jobId", "title location")
-      .select("jobId status appliedAt snapshot createdAt updatedAt")
-      .sort({ appliedAt: -1 });
+// getting all applicants based on status 
+router.get("/applicants/job/:status", async (req, res) => {
+    try {
+        const { status } = req.params;
 
-    /**
-     * ✅ Step 4: Response for admin dashboard
-     * Snapshot is the source of truth for candidate data
-     */
-    res.status(200).json({
-      success: true,
-      count: applicants.length,
-      data: applicants,
-    });
+        /**
+         * 🔍 Search query from frontend
+         * Example:
+         * /applicants/job/pending?search=kapil
+         */
+        const { search } = req.query;
 
-  } catch (error) {
-    console.error("Admin applicants fetch error:", error);
+        /**
+         * 🎯 Step 1: Base query
+         * We always filter by status first
+         * because this API is status-specific
+         */
+        let query = { status };
 
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+        /**
+         * 🔍 Step 2: Global search across snapshot + job data
+         * We search inside snapshot because it stores frozen candidate data
+         * This prevents data inconsistency if candidate updates profile later
+         */
+        if (search) {
+            query.$or = [
+                { "snapshot.name": { $regex: search, $options: "i" } },
+                { "snapshot.email": { $regex: search, $options: "i" } },
+                { "snapshot.phone": { $regex: search, $options: "i" } },
+                { "snapshot.location": { $regex: search, $options: "i" } },
+
+                { "snapshot.education.degree": { $regex: search, $options: "i" } },
+                { "snapshot.education.university": { $regex: search, $options: "i" } },
+
+                { "snapshot.experience.role": { $regex: search, $options: "i" } },
+                { "snapshot.experience.company": { $regex: search, $options: "i" } },
+
+                { "snapshot.skills": { $regex: search, $options: "i" } },
+                { "status": { $regex: search, $options: "i" } },
+                { "jobType": { $regex: search, $options: "i" } },
+            ];
+        }
+
+        /**
+         * 📦 Step 3: Fetch applicants
+         * - jobId populated for stable job reference
+         * - candidateId NOT populated (admin reads snapshot)
+         */
+        const applicants = await Applicant.find(query)
+            .populate("jobId", "title location")
+            .select("jobId status appliedAt snapshot createdAt updatedAt")
+            .sort({ appliedAt: -1 });
+
+        /**
+         * ✅ Step 4: Response for admin dashboard
+         * Snapshot is the source of truth for candidate data
+         */
+        res.status(200).json({
+            success: true,
+            count: applicants.length,
+            data: applicants,
+        });
+
+    } catch (error) {
+        console.error("Admin applicants fetch error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 });
 
 

@@ -94,7 +94,7 @@ const CandidateSidebar = ({ isOpen, setIsOpen }) => {
           })}
 
           {/* Logout */}
-          <button
+          {/* <button
             className="w-full flex items-center gap-3 px-4 py-2 rounded-lg
               text-gray-700 hover:bg-purple-100 hover:text-purple-600
               transition font-medium cursor-pointer"
@@ -107,7 +107,7 @@ const CandidateSidebar = ({ isOpen, setIsOpen }) => {
               <FaSignOutAlt />
             </span>
             <span className="text-sm">Logout</span>
-          </button>
+          </button> */}
         </nav>
       </aside>
     </>
